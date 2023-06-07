@@ -41,9 +41,13 @@ instance Ord Country where
 
 data Name = Name String
   deriving Show
+  
+stringToLower :: [Char] -> [Char]
+stringToLower [] = []
+stringToLower (headChar: tailChars) = [Data.Char.toLower headChar] ++ stringToLower tailChars
 
 instance Eq Name where
-  (==) = todo
+  Name name1 == Name name2 = stringToLower name1 == stringToLower name2
 
 ------------------------------------------------------------------------------
 -- Ex 4: here is a list type parameterized over the type it contains.
