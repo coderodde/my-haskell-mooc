@@ -56,12 +56,15 @@ instance Eq Name where
 --
 -- Note how the instance needs an Eq a constraint. What happens if you
 -- remove it?
-
 data List a = Empty | LNode a (List a)
   deriving Show
 
 instance Eq a => Eq (List a) where
-  (==) = todo
+  Empty == Empty = True
+  Empty == LNode _ _ = False
+  LNode _ _ == Empty = False
+  LNode x1 l1 == LNode x2 l2 = x1 == x2 && l1 == l2
+
 
 ------------------------------------------------------------------------------
 -- Ex 5: below you'll find two datatypes, Egg and Milk. Implement a
