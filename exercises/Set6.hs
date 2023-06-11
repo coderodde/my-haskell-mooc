@@ -124,6 +124,19 @@ data Number = Finite Integer | Infinite
   deriving (Show,Eq)
 
 
+instance Ord Number where
+  Infinite <= Infinite
+    | otherwise = True
+  Finite num1 <= Finite num2
+    | num1 < num2 = True
+    | num1 > num2 = False
+    | otherwise = True
+  Finite num <= Infinite
+    | otherwise = True
+  Infinite <= Finite num
+    | otherwise = False
+
+
 ------------------------------------------------------------------------------
 -- Ex 8: rational numbers have a numerator and a denominator that are
 -- integers, usually sex§§parated by a horizontal bar or a slash:
