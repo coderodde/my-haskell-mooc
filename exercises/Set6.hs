@@ -225,6 +225,17 @@ instance Num RationalNumber where
 --   add [1,2] [3,4]        ==>  [1,2,3,4]
 --   add zero [True,False]  ==>  [True,False]
 
+class Addable a where 
+  zero :: a
+  add :: a -> a -> a
+  
+instance Addable Integer where
+	zero = 0
+	add x y = x + y
+	
+instance Addable [a] where
+	zero = []
+	add xs ys = xs ++ ys
 
 ------------------------------------------------------------------------------
 -- Ex 12: cycling. Implement a type class Cycle that contains a
