@@ -264,6 +264,23 @@ instance Addable [a] where
 
 data Color = Red | Green | Blue
   deriving (Show, Eq)
+
 data Suit = Club | Spade | Diamond | Heart
   deriving (Show, Eq)
 
+class Eq a => Cycle a where
+  step :: a -> a
+  stepMany :: Int -> a -> a
+  stepMany 0 x = x
+  stepMany steps x = stepMany (steps - 1) (step x)
+	
+instance Cycle Color where
+  step Red = Green
+  step Green = Blue
+  step Blue = Red
+  
+instance Cycle Suit where
+  step Club = Spade
+  step Spade = Diamond
+  step Diamond = Heart
+  step Heart = Club
