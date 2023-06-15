@@ -24,13 +24,11 @@ data Time = Time Double
 data Velocity = Velocity Double
   deriving (Show,Eq)
 
--- velocity computes a velocity given a distance and a time
 velocity :: Distance -> Time -> Velocity
-velocity = todo
+velocity (Distance meters) (Time seconds) = Velocity (meters / seconds)
 
--- travel computes a distance given a velocity and a time
 travel :: Velocity -> Time -> Distance
-travel = todo
+travel (Velocity metersPerSecond) (Time time) = Distance (metersPerSecond * time)
 
 ------------------------------------------------------------------------------
 -- Ex 2: let's implement a simple Set datatype. A Set is a list of
