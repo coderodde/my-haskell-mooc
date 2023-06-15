@@ -43,19 +43,20 @@ travel (Velocity metersPerSecond) (Time time) = Distance (metersPerSecond * time
 --   add 1 (add 1 emptySet)  ==>  Set [1]
 
 data Set a = Set [a]
-  deriving (Show,Eq)
+  deriving (Show, Eq)
 
 -- emptySet is a set with no elements
-emptySet :: Set a
-emptySet = todo
+emptySet :: (Eq a, Ord a) => Set a
+emptySet = Set []
 
 -- member tests if an element is in a set
 member :: Eq a => a -> Set a -> Bool
-member = todo
+member _ (Set ([])) = False
+member value (Set (x : xs)) = if x == value then True else member value (Set xs)
 
 -- add a member to a set
-add :: a -> Set a -> Set a
-add = todo
+add :: (Eq a, Ord a) => a -> Set a -> Set a
+add value (Set arr) = if member value (Set arr) then (Set arr) else Set (sort (arr ++ [value]))
 
 ------------------------------------------------------------------------------
 -- Ex 3: a state machine for baking a cake. The type Event represents
