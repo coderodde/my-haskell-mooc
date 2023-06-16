@@ -58,49 +58,65 @@ member value (Set (x : xs)) = if x == value then True else member value (Set xs)
 add :: (Eq a, Ord a) => a -> Set a -> Set a
 add value (Set arr) = if member value (Set arr) then (Set arr) else Set (sort (arr ++ [value]))
 
-------------------------------------------------------------------------------
--- Ex 3: a state machine for baking a cake. The type Event represents
--- things that can happen while baking a cake. The type State is meant
--- to represent the states a cake can be in.
---
--- Your job is to
---
---  * add new states to the State type
---  * and implement the step function
---
--- so that they have the following behaviour:
---
---  * Baking starts in the Start state
---  * A successful cake (reperesented by the Finished value) is baked
---    by first adding eggs, then adding flour and sugar (flour and
---    sugar can be added in which ever order), then mixing, and
---    finally baking.
---  * If the order of Events differs from this, the result is an Error cake.
---    No Events can save an Error cake.
---  * Once a cake is Finished, it stays Finished even if additional Events happen.
---
--- The function bake just calls step repeatedly. It's used for the
--- examples below. Don't modify it.
---
--- Examples:
---   bake [AddEggs,AddFlour,AddSugar,Mix,Bake]  ==>  Finished
---   bake [AddEggs,AddFlour,AddSugar,Mix,Bake,AddSugar,Mix]  ==> Finished
---   bake [AddFlour]  ==>  Error
---   bake [AddEggs,AddFlour,Mix]  ==>  Error
+	------------------------------------------------------------------------------
+	-- Ex 3: a state machine for baking a cake. The type Event represents
+	-- things that can happen while baking a cake. The type State is meant
+	-- to represent the states a cake can be in.
+	--
+	-- Your job is to
+	--
+	--  * add new states to the State type
+	--  * and implement the step function
+	--
+	-- so that they have the following behaviour:
+	--
+	--  * Baking starts in the Start state
+	--  * A successful cake (reperesented by the Finished value) is baked
+	--    by first adding eggs, then adding flour and sugar (flour and
+	--    sugar can be added in which ever order), then mixing, and
+	--    finally baking.
+	--  * If the order of Events differs from this, the result is an Error cake.
+	--    No Events can save an Error cake.
+	--  * Once a cake is Finished, it stays Finished even if additional Events happen.
+	--
+	-- The function bake just calls step repeatedly. It's used for the
+	-- examples below. Don't modify it.
+	--
+	-- Examples:
+	--   bake [AddEggs,AddFlour,AddSugar,Mix,Bake]  ==>  Finished
+	--   bake [AddEggs,AddFlour,AddSugar,Mix,Bake,AddSugar,Mix]  ==> Finished
+	--   bake [AddFlour]  ==>  Error
+	--   bake [AddEggs,AddFlour,Mix]  ==>  Error
 
 data Event = AddEggs | AddFlour | AddSugar | Mix | Bake
-  deriving (Eq,Show)
+  deriving (Eq, Show)
 
-data State = Start | Error | Finished
-  deriving (Eq,Show)
+data State = Start | Error | Finished | HasEggs | HasFlour | HasSugar | HasFlourAndSugar | Mixed 
+  deriving (Eq, Show)
 
-step = todo
+stepHelper :: State -> Event -> Bool -> Bool -> State
+
+stepHelper Start AddEggs False False = HasEggs
+stepHelper Start AddEggs True _ = Error
+stepHelper Start AddEggs _ True = Error
+stepHelper Start _ _ _ = Error
+
+stepHelper HasEggs AddFlour has_flour has_sugar = if has_flour then Error else HasFlour
+stepHelper HasEggs AddSugar has_flour has_sugar = if has_sugar then Error else HasSugar
+
+stepHelper HasEggs AddFlour _ has_sugar = stepHelper HasEggs AddFlour True has_sugar
+stepHelper HasEggs AddSugar has_flour _ = stepHelper HasEggs AddSugar has_flour True
+stepHelper _ Mix has_flour has_sugar = if has_flour && has_sugar then Mixed else Error
+stepHelper Mixed Bake _ _ = Finished
+
+step :: State -> Event -> State
+step s e = stepHelper s e False False
 
 -- do not edit this
 bake :: [Event] -> State
 bake events = go Start events
   where go state [] = state
-        go state (e:es) = go (step state e) es
+	    go state (e:es) = go (step state e) es
 
 ------------------------------------------------------------------------------
 -- Ex 4: remember how the average function from Set4 couldn't really
@@ -115,14 +131,16 @@ bake events = go Start events
 
 average :: Fractional a => NonEmpty a -> a
 average = todo
-
+	
 ------------------------------------------------------------------------------
 -- Ex 5: reverse a NonEmpty list.
 --
 -- PS. The Data.List.NonEmpty type has been imported for you
 
 reverseNonEmpty :: NonEmpty a -> NonEmpty a
-reverseNonEmpty = todo
+reverseNonEmpty (x :| xs) = case reverse xs of
+                            [] -> x :| []
+                            (y:ys) -> y :| (ys ++ [x]) 
 
 ------------------------------------------------------------------------------
 -- Ex 6: implement Semigroup instances for the Distance, Time and
