@@ -134,7 +134,7 @@ bake events = go Start events
 --   average (1.0 :| [2.0,3.0])  ==>  2.0
 
 average :: Fractional a => NonEmpty a -> a
-average = todo
+average (x :| xs) = sum (x :| xs) / fromIntegral (1 + length xs)
 	
 ------------------------------------------------------------------------------
 -- Ex 5: reverse a NonEmpty list.
@@ -156,6 +156,14 @@ reverseNonEmpty (x :| xs) = case reverse xs of
 -- velocity (Distance 50 <> Distance 10) (Time 1 <> Time 2)
 --    ==> Velocity 20
 
+instance Semigroup (Distance) where
+  Distance a <> Distance b = Distance (a + b)
+
+instance Semigroup (Time) where
+  Time a <> Time b = Time (a + b)
+
+instance Semigroup (Velocity) where
+  Velocity a <> Velocity b = Velocity (a + b)
 
 ------------------------------------------------------------------------------
 -- Ex 7: implement a Monoid instance for the Set type from exercise 2.
