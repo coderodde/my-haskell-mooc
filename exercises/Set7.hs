@@ -91,32 +91,42 @@ add value (Set arr) = if member value (Set arr) then (Set arr) else Set (sort (a
 data Event = AddEggs | AddFlour | AddSugar | Mix | Bake
   deriving (Eq, Show)
 
-data State = Start | Error | Finished | HasEggs | HasFlour | HasSugar | HasFlourAndSugar | Mixed 
+data Egged = HasEggs | HasNoEggs
   deriving (Eq, Show)
 
-stepHelper :: State -> Event -> Bool -> Bool -> State
+data Floured = HasFlour | HasNoFlour
+  deriving (Eq, Show)
 
-stepHelper Start AddEggs False False = HasEggs
-stepHelper Start AddEggs True _ = Error
-stepHelper Start AddEggs _ True = Error
-stepHelper Start _ _ _ = Error
+data Sugared = HasSugar | HasNoSugar
+  deriving (Eq, Show)
 
-stepHelper HasEggs AddFlour has_flour has_sugar = if has_flour then Error else HasFlour
-stepHelper HasEggs AddSugar has_flour has_sugar = if has_sugar then Error else HasSugar
+data Mixed = Mixed | Unmixed
+  deriving (Eq, Show)
 
-stepHelper HasEggs AddFlour _ has_sugar = stepHelper HasEggs AddFlour True has_sugar
-stepHelper HasEggs AddSugar has_flour _ = stepHelper HasEggs AddSugar has_flour True
-stepHelper _ Mix has_flour has_sugar = if has_flour && has_sugar then Mixed else Error
-stepHelper Mixed Bake _ _ = Finished
+data Baked = Baked | Unbaked
+  deriving (Eq, Show)
+
+data State = Start | Finished | Error | InProgress Egged Floured Sugared Mixed Baked
+  deriving (Eq, Show)
 
 step :: State -> Event -> State
-step s e = stepHelper s e False False
+step Error _ = Error -- Cannot "save" an Error cake.
+step Finished _ = Finished -- Once finished, the cake remains finished even if we do additional events.
+step Start AddEggs = InProgress HasEggs HasNoFlour HasNoSugar Unmixed Unbaked -- Adding eggs.
+step Start _ = Error -- The first event must be AddEggs.
+step (InProgress HasEggs flour sugar Unmixed Unbaked) AddFlour = InProgress HasEggs HasFlour sugar Unmixed Unbaked
+step (InProgress HasEggs flour sugar Unmixed Unbaked) AddSugar = InProgress HasEggs flour HasSugar Unmixed Unbaked
+step (InProgress HasEggs HasFlour HasSugar Unmixed Unbaked) Mix = InProgress HasEggs HasFlour HasSugar Mixed Unbaked
+step (InProgress HasEggs HasFlour HasSugar Mixed Baked) Bake = Finished
+step (InProgress HasEggs HasFlour HasSugar Mixed Unbaked) Bake = Finished
+step _ _ = Error
 
 -- do not edit this
 bake :: [Event] -> State
 bake events = go Start events
-  where go state [] = state
-	    go state (e:es) = go (step state e) es
+  where
+    go state [] = state
+    go state (e : es) = go (step state e) es
 
 ------------------------------------------------------------------------------
 -- Ex 4: remember how the average function from Set4 couldn't really
