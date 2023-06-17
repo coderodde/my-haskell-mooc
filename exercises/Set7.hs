@@ -91,35 +91,29 @@ add value (Set arr) = if member value (Set arr) then (Set arr) else Set (sort (a
 data Event = AddEggs | AddFlour | AddSugar | Mix | Bake
   deriving (Eq, Show)
 
-data Egged = HasEggs | HasNoEggs
-  deriving (Eq, Show)
-
-data Floured = HasFlour | HasNoFlour
-  deriving (Eq, Show)
-
-data Sugared = HasSugar | HasNoSugar
-  deriving (Eq, Show)
-
-data Mixed = Mixed | Unmixed
-  deriving (Eq, Show)
-
-data Baked = Baked | Unbaked
-  deriving (Eq, Show)
-
-data State = Start | Finished | Error | InProgress Egged Floured Sugared Mixed Baked
+data State = Start | Finished | Error | Eggs | EggsFlour | EggsSugar | EggsFlourSugar | EggsFlourSugarMixed
   deriving (Eq, Show)
 
 step :: State -> Event -> State
-step Error _ = Error -- Cannot "save" an Error cake.
-step Finished _ = Finished -- Once finished, the cake remains finished even if we do additional events.
-step Start AddEggs = InProgress HasEggs HasNoFlour HasNoSugar Unmixed Unbaked -- Adding eggs.
-step Start _ = Error -- The first event must be AddEggs.
-step (InProgress HasEggs flour sugar Unmixed Unbaked) AddFlour = InProgress HasEggs HasFlour sugar Unmixed Unbaked
-step (InProgress HasEggs flour sugar Unmixed Unbaked) AddSugar = InProgress HasEggs flour HasSugar Unmixed Unbaked
-step (InProgress HasEggs HasFlour HasSugar Unmixed Unbaked) Mix = InProgress HasEggs HasFlour HasSugar Mixed Unbaked
-step (InProgress HasEggs HasFlour HasSugar Mixed Baked) Bake = Finished
-step (InProgress HasEggs HasFlour HasSugar Mixed Unbaked) Bake = Finished
-step _ _ = Error
+step Start AddEggs = Eggs
+step Start _ = Error
+
+step Eggs AddFlour = EggsFlour
+step Eggs AddSugar = EggsSugar
+step Eggs _ = Error
+
+step EggsFlour AddSugar = EggsFlourSugar
+step EggsSugar AddFlour = EggsFlourSugar
+step EggsFlour _ = Error
+step EggsSugar _ = Error
+
+step EggsFlourSugar Mix = EggsFlourSugarMixed
+step EggsFlourSugar _ = Error
+
+step EggsFlourSugarMixed Bake = Finished
+step EggsFlourSugarMixed _ = Error
+step Finished _ = Finished
+step Error _ = Error
 
 -- do not edit this
 bake :: [Event] -> State
