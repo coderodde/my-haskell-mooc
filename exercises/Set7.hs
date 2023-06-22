@@ -57,7 +57,7 @@ member value (Set (x : xs)) = if x == value then True else member value (Set xs)
 -- add a member to a set
 add :: (Eq a, Ord a) => a -> Set a -> Set a
 add value (Set arr) = if member value (Set arr) then (Set arr) else Set (sort (arr ++ [value]))
-
+	
 
 	------------------------------------------------------------------------------
 	-- Ex 3: a state machine for baking a cake. The type Event represents
@@ -206,28 +206,41 @@ instance Ord a => Semigroup (Set a) where
 
 data Operation1 = Add1 Int Int
                 | Subtract1 Int Int
+                | Multiply1 Int Int
   deriving Show
 
 compute1 :: Operation1 -> Int
 compute1 (Add1 i j) = i+j
 compute1 (Subtract1 i j) = i-j
+compute1 (Multiply1 i j) = i*j
 
 show1 :: Operation1 -> String
-show1 = todo
+show1 (Add1 i j) = show i ++ "+" ++ show j
+show1 (Subtract1 i j) = show i ++ "-" ++ show j
+show1 (Multiply1 i j) = show i ++ "*" ++ show j
 
 data Add2 = Add2 Int Int
   deriving Show
 data Subtract2 = Subtract2 Int Int
   deriving Show
+data Multiply2 = Multiply2 Int Int 
+  deriving Show
 
 class Operation2 op where
   compute2 :: op -> Int
+  show2 :: op -> String
 
 instance Operation2 Add2 where
   compute2 (Add2 i j) = i+j
+  show2 (Add2 i j) = show i ++ "+" ++ show j
 
 instance Operation2 Subtract2 where
   compute2 (Subtract2 i j) = i-j
+  show2 (Subtract2 i j) = show i ++ "-" ++ show j
+
+instance Operation2 Multiply2 where
+  compute2 (Multiply2 i j) = i*j
+  show2 (Multiply2 i j) = show i ++ "*" ++ show j
 
 
 ------------------------------------------------------------------------------
