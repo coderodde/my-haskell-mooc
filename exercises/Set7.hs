@@ -270,7 +270,12 @@ data PasswordRequirement =
   deriving Show
 
 passwordAllowed :: String -> PasswordRequirement -> Bool
-passwordAllowed = todo
+passwordAllowed password (MinimumLength n) = length password >= n
+passwordAllowed password (ContainsSome str) = not $ null $ intersect password str
+passwordAllowed password (DoesNotContain str) = null (intersect password str)
+passwordAllowed password (And passwdReq1 passwdReq2) = passwordAllowed password passwdReq1 && passwordAllowed password passwdReq2
+passwordAllowed password (Or passwdReq1 passwdReq2) = passwordAllowed password passwdReq1 || passwordAllowed password passwdReq2
+
 
 ------------------------------------------------------------------------------
 -- Ex 10: a DSL for simple arithmetic expressions with addition and
