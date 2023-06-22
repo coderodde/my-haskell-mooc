@@ -297,17 +297,31 @@ passwordAllowed password (Or passwdReq1 passwdReq2) = passwordAllowed password p
 --     ==> "(3*(1+1))"
 --
 
-data Arithmetic = Todo
-  deriving Show
+
+data Operation = Add | Multiply
+  deriving (Show)
+
+data Arithmetic = Value Integer | Expression Operation Arithmetic Arithmetic
+  deriving (Show)
 
 literal :: Integer -> Arithmetic
-literal = todo
+literal value = Value value
 
 operation :: String -> Arithmetic -> Arithmetic -> Arithmetic
-operation = todo
+operation op a1 a2 = case op of
+  "+" -> Expression Add a1 a2
+  "*" -> Expression Multiply a1 a2
+  otherwise -> error("Should not get here.")
 
 evaluate :: Arithmetic -> Integer
-evaluate = todo
+evaluate (Value value) = value
+evaluate (Expression op a1 a2) = case op of
+  Add -> evaluate a1 + evaluate a2
+  Multiply -> evaluate a1 * evaluate a2
 
 render :: Arithmetic -> String
-render = todo
+render (Value value) = show value
+render (Expression op a1 a2) =
+  case op of
+    Add -> "(" ++ render a1 ++ "+" ++ render a2 ++ ")"
+    Multiply -> "(" ++ render a1 ++ "*" ++ render a2 ++ ")"
