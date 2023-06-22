@@ -58,6 +58,7 @@ member value (Set (x : xs)) = if x == value then True else member value (Set xs)
 add :: (Eq a, Ord a) => a -> Set a -> Set a
 add value (Set arr) = if member value (Set arr) then (Set arr) else Set (sort (arr ++ [value]))
 
+
 	------------------------------------------------------------------------------
 	-- Ex 3: a state machine for baking a cake. The type Event represents
 	-- things that can happen while baking a cake. The type State is meant
@@ -173,6 +174,16 @@ instance Semigroup (Velocity) where
 --
 -- What are the class constraints for the instances?
 
+instance Ord a => Monoid (Set a) where 
+  mempty = Set []
+
+instance Ord a => Semigroup (Set a) where
+  Set xset <> Set yset = go (Set xset) yset
+    where go xset [] = xset 
+          go xset (y:ys) = add y (xset <> (Set ys))
+
+--instance (Ord a, Num a) => Semigroup (Set a) where
+--  Set xset <> Set yset = setUnion (Set xset) (Set yset)
 
 ------------------------------------------------------------------------------
 -- Ex 8: below you'll find two different ways of representing
