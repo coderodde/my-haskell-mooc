@@ -135,7 +135,7 @@ renderListExample = renderList justADot (9,11) (9,11)
 dotAndLine = Picture f 
   where f (Coord 3 4) = white
         f (Coord _ 8) = pink
-        f (Coord _ _) = black		
+        f (Coord _ _) = black
 ------------------------------------------------------------------------------
 -- Ex 2: blending colors and images.
 --
@@ -165,15 +165,22 @@ dotAndLine = Picture f
 --          ["7f0000","ff7f7f","7f0000"],
 --          ["7f0000","7f0000","7f0000"]]
 
-myAve :: Int -> Int -> Int
-myAve x y = div (x + y) 2
-
 blendColor :: Color -> Color -> Color
-blendColor color1 color2 = Color (myAve (getRed color1) (getRed color2)) (myAve (getGreen color1) (getGreen color2)) (myAve (getBlue color1) (getBlue color2))
-  where ave x y = (x + y) / 2
-  
+blendColor color1 color2 = Color (ave (getRed color1) (getRed color2)) (ave (getGreen color1) (getGreen color2)) (ave (getBlue color1) (getBlue color2))
+  where ave x y = div (x + y) 2
+
+--justADot = Picture f
+--  where f (Coord 10 10) = white
+--        f _             = black
+
+combineHelper :: (Color -> Color -> Color) -> Color -> Color -> Color 
+combineHelper pixelFunction (Color r1 g1 b1) (Color r2 g2 b2) = pixelFunction (Color r1 g1 b1) (Color r2 g2 b2) 
+
 combine :: (Color -> Color -> Color) -> Picture -> Picture -> Picture
-combine = todo
+combine blendingFunction (Picture f1) (Picture f2) = Picture fout
+  where fout (Coord x y) = blendingFunction (f1 (Coord x y)) (f2 (Coord x y))
+ 
+-- combine blendColor (Picture (Coord (x, y) -> color1)) (Picture (Coord (x, y) -> color2)) = (Picture (Coord (x y) -> blendColor color1 color2))  
 
 ------------------------------------------------------------------------------
 
