@@ -478,11 +478,24 @@ checkered = flipBlend largeVerticalStripes2
 --        ["000000","000000","333333","000000","000000"],
 --        ["000000","000000","000000","000000","000000"]]
 
+--data Zoom = Zoom Int
+--  deriving Show
+
+--instance Transform Zoom where
+--  apply (Zoom z) f = zoom z f
+
 data Blur = Blur
   deriving Show
 
+blurAve :: Color -> Color -> Color -> Color -> Color -> Color
+blurAve c1 c2 c3 c4 c5 = Color (div (getRed c1 + getRed c2 + getRed c3 + getRed c4 + getRed c5) 5) (div (getGreen c1 + getGreen c2 + getGreen c3 + getGreen c4 + getGreen c5) 5) (div (getBlue c1 + getBlue c2 + getBlue c3 + getBlue c4 + getBlue c5) 5)
+
+blurImpl :: Picture -> Int -> Int -> Color
+blurImpl (Picture f) x y = blurAve (f (Coord x y)) (f (Coord (x - 1) y)) (f (Coord (x + 1) y)) (f (Coord x (y - 1))) (f (Coord x (y + 1))) 
+
 instance Transform Blur where
-  apply = todo
+  apply Blur f = Picture fout
+    where fout (Coord x y) = blurImpl f x y
 ------------------------------------------------------------------------------
 
 ------------------------------------------------------------------------------
