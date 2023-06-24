@@ -353,8 +353,20 @@ examplePatterns = (paint (solid black) hat . paint (stripes red yellow) legs . p
 -- What if we want vertical stripes? What if we want wider stripes?
 -- Let's implement zooming and flipping images.
 
+flipCoordX :: Coord -> Coord 
+flipCoordX (Coord x y) = Coord (-x) y
+
+flipCoordY :: Coord -> Coord 
+flipCoordY (Coord x y) = Coord x (-y)
+
 flipCoordXY :: Coord -> Coord
 flipCoordXY (Coord x y) = (Coord y x)
+
+flipX :: Picture -> Picture 
+flipX (Picture f) = Picture (f . flipCoordX)
+
+flipY :: Picture -> Picture
+flipY (Picture f) = Picture (f . flipCoordY)
 
 -- Flip a picture by switching x and y coordinates
 flipXY :: Picture -> Picture
@@ -401,19 +413,22 @@ xy = Picture f
 data Fill = Fill Color
 
 instance Transform Fill where
-  apply = todo
+  apply (Fill color) (Picture f) = Picture g
+    where g (Coord x y) = color
 
 data Zoom = Zoom Int
   deriving Show
 
 instance Transform Zoom where
-  apply = todo
+  apply (Zoom z) f = zoom z f
 
 data Flip = FlipX | FlipY | FlipXY
   deriving Show
 
 instance Transform Flip where
-  apply = todo
+  apply FlipXY = flipXY
+  apply FlipX = flipX
+  apply FlipY = flipY
 ------------------------------------------------------------------------------
 
 ------------------------------------------------------------------------------
