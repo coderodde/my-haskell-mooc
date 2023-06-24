@@ -332,8 +332,13 @@ stripes a b = Picture f
 --       ["ffffff","ffffff","000000","000000","000000"],
 --       ["000000","000000","000000","000000","000000"]]
 
+--paintSolid :: Color -> Shape -> Picture -> Picture
+--paintSolid color (Shape shapeFunction) (Picture base) = Picture f
+--  where f (Coord x y) = if shapeFunction (Coord x y) then color else base (Coord x y)
+
 paint :: Picture -> Shape -> Picture -> Picture
-paint pat shape base = todo
+paint (Picture pat) (Shape shape) (Picture base) = Picture f
+  where f (Coord x y) = if shape (Coord x y) then pat (Coord x y) else base (Coord x y)
 ------------------------------------------------------------------------------
 
 -- Here's a patterned version of the snowman example. See it by running:
