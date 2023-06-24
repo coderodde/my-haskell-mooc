@@ -287,7 +287,8 @@ exampleSnowman = fill white snowman
 --        ["000000","000000","000000"]]
 
 paintSolid :: Color -> Shape -> Picture -> Picture
-paintSolid color shape base = todo
+paintSolid color (Shape shapeFunction) (Picture base) = Picture f
+  where f (Coord x y) = if shapeFunction (Coord x y) then color else base (Coord x y)
 ------------------------------------------------------------------------------
 
 allWhite :: Picture
