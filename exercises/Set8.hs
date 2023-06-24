@@ -513,7 +513,8 @@ data BlurMany = BlurMany Int
   deriving Show
 
 instance Transform BlurMany where
-  apply = todo
+  apply (BlurMany 0) f = f
+  apply (BlurMany n) f = apply (BlurMany (n - 1)) (apply (Blur) f)
 ------------------------------------------------------------------------------
 
 -- Here's a blurred version of our original snowman. See it by running
