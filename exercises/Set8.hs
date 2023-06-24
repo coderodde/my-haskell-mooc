@@ -169,10 +169,6 @@ blendColor :: Color -> Color -> Color
 blendColor color1 color2 = Color (ave (getRed color1) (getRed color2)) (ave (getGreen color1) (getGreen color2)) (ave (getBlue color1) (getBlue color2))
   where ave x y = div (x + y) 2
 
---justADot = Picture f
---  where f (Coord 10 10) = white
---        f _             = black
-
 combineHelper :: (Color -> Color -> Color) -> Color -> Color -> Color 
 combineHelper pixelFunction (Color r1 g1 b1) (Color r2 g2 b2) = pixelFunction (Color r1 g1 b1) (Color r2 g2 b2) 
 
@@ -241,7 +237,8 @@ exampleCircle = fill red (circle 80 100 200)
 --        ["000000","000000","000000","000000","000000","000000"]]
 
 rectangle :: Int -> Int -> Int -> Int -> Shape
-rectangle x0 y0 w h = todo
+rectangle x0 y0 w h = Shape f
+  where f (Coord x y) = x >= x0 && x < x0 + w && y >= y0 && y < y0 + h
 ------------------------------------------------------------------------------
 
 ------------------------------------------------------------------------------
