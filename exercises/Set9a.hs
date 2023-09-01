@@ -97,7 +97,6 @@ repeated (x:xs) = if x == head xs then Just x else repeated xs
 --   sumSuccess []
 --     ==> Left "no data"
 
-
 has_no_valid_measurements :: [Either String Int] -> Bool
 has_no_valid_measurements [] = True
 has_no_valid_measurements ((Right _) : ms) = False
@@ -130,30 +129,34 @@ sumSuccess ms = if has_no_valid_measurements ms then Left "no data" else Right (
 --   isOpen (open "0000" (lock (changeCode "0000" (open "1234" aLock)))) ==> True
 --   isOpen (open "1234" (lock (changeCode "0000" (open "1234" aLock)))) ==> False
 
-data Lock = LockUndefined
-  deriving Show
+data Lock = Locked String | Open String
+  deriving (Show)
 
 -- aLock should be a locked lock with the code "1234"
 aLock :: Lock
-aLock = todo
+aLock = Locked "1234"
 
 -- isOpen returns True if the lock is open
 isOpen :: Lock -> Bool
-isOpen = todo
+isOpen (Locked code) = False
+isOpen (Open code) = True
 
 -- open tries to open the lock with the given code. If the code is
 -- wrong, nothing happens.
 open :: String -> Lock -> Lock
-open = todo
+open code (Locked actual_code) = if code == actual_code then Open actual_code else Locked actual_code
+open code (Open actual_code) = Open actual_code
 
 -- lock closes a lock. If the lock is already closed, nothing happens.
 lock :: Lock -> Lock
-lock = todo
+lock (Locked code) = Locked code
+lock (Open code) = Locked code
 
 -- changeCode changes the code of an open lock. If the lock is closed,
 -- nothing happens.
 changeCode :: String -> Lock -> Lock
-changeCode = todo
+changeCode new_code (Locked actual_code) = Locked actual_code
+changeCode new_code (Open actual_code) = Open new_code
 
 ------------------------------------------------------------------------------
 -- Ex 7: Here's a type Text that just wraps a String. Implement an Eq
