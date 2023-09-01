@@ -172,7 +172,18 @@ changeCode new_code (Open actual_code) = Open new_code
 --   Text "a bc" == Text "ab  d\n"  ==> False
 
 data Text = Text String
-  deriving Show
+  deriving (Show)
+
+mycmp :: String -> String -> Bool
+mycmp str1 str2 = ignoreSpace str1 == ignoreSpace str2
+  where
+    processChar ch = if Data.Char.isSpace ch then [] else [ch]
+    ignoreSpace [] = ""
+    ignoreSpace (ch : str) = processChar ch ++ ignoreSpace str
+
+instance Eq Text where
+  (Text "") == (Text "") = True
+  (Text succ1) == (Text succ2) = mycmp succ1 succ2
 
 
 ------------------------------------------------------------------------------
