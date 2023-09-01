@@ -97,8 +97,18 @@ repeated (x:xs) = if x == head xs then Just x else repeated xs
 --   sumSuccess []
 --     ==> Left "no data"
 
+
+has_no_valid_measurements :: [Either String Int] -> Bool
+has_no_valid_measurements [] = True
+has_no_valid_measurements ((Right _) : ms) = False
+has_no_valid_measurements ((Left _) : ms) = has_no_valid_measurements ms
+
 sumSuccess :: [Either String Int] -> Either String Int
-sumSuccess = todo
+sumSuccess ms = if has_no_valid_measurements ms then Left "no data" else Right (count_successful_sum 0 ms)
+  where
+    count_successful_sum _ [] = 0
+    count_successful_sum sum_so_far (Right x : ms) = x + sum_so_far + count_successful_sum sum_so_far ms
+    count_successful_sum sum_so_far (Left _ : ms) = sum_so_far + count_successful_sum sum_so_far ms
 
 ------------------------------------------------------------------------------
 -- Ex 6: A combination lock can either be open or closed. The lock
