@@ -26,7 +26,8 @@ import Mooc.Todo
 -- Otherwise return "Ok."
 
 workload :: Int -> Int -> String
-workload nExercises hoursPerExercise = todo
+workload nExercises hoursPerExercise = if workload > 100 then "Holy moly!" else if workload < 10 then "Piece of cake!" else "Ok."
+  where workload = nExercises * hoursPerExercise
 
 ------------------------------------------------------------------------------
 -- Ex 2: Implement the function echo that builds a string like this:
@@ -39,7 +40,8 @@ workload nExercises hoursPerExercise = todo
 -- Hint: use recursion
 
 echo :: String -> String
-echo = todo
+echo "" = ""
+echo str = str ++ ", " ++ echo (tail str)
 
 ------------------------------------------------------------------------------
 -- Ex 3: A country issues some banknotes. The banknotes have a serial
@@ -51,8 +53,16 @@ echo = todo
 -- Given a list of bank note serial numbers (strings), count how many
 -- are valid.
 
+isValidBanknote :: String -> Bool
+isValidBanknote banknote = banknote !! 2 == banknote !! 4 || banknote !! 3 == banknote !! 5
+
+get_count :: String -> Int
+get_count banknote = if isValidBanknote banknote then 1 else 0
+
 countValid :: [String] -> Int
-countValid = todo
+countValid banknotes = countValidHelper 0 banknotes
+  where countValidHelper banknotes_so_far [] = banknotes_so_far
+        countValidHelper banknotes_so_far (b:bs) = banknotes_so_far + get_count(b) + countValidHelper banknotes_so_far bs
 
 ------------------------------------------------------------------------------
 -- Ex 4: Find the first element that repeats two or more times _in a
