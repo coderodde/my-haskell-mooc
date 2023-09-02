@@ -217,8 +217,24 @@ instance Eq Text where
 --     compose [("a","alpha"),("b","beta"),("c","gamma")] [("alpha",1),("beta",2),("omicron",15)]
 --       ==> [("a",1),("b",2)]
 
-compose :: (Eq a, Eq b) => [(a,b)] -> [(b,c)] -> [(a,c)]
-compose = todo
+--compose :: (Eq a, Eq b) => [(a,b)] -> [(b,c)] -> [(a,c)]
+--compose = todo
+
+unwrapMaybeJustValue :: Maybe a -> a
+unwrapMaybeJustValue (Just x) = x
+unwrapMaybeJustValue Nothing = error ("Cannot unwrap Nothing in a Maybe!")
+
+goCompose :: (Eq a, Eq b, Eq c) => (a, b) -> [(b, c)] -> [(a, c)]
+goCompose (f1, f2) ss =
+  let m = lookup f2 ss
+  in if m == Nothing
+     then []
+     else [(f1, unwrapMaybeJustValue m)]
+
+compose :: (Eq a, Eq b, Eq c) => [(a, b)] -> [(b, c)] -> [(a, c)]
+compose [] _ = []
+compose _ [] = []
+compose (f : fs) ss = goCompose f ss ++ compose fs ss
 
 ------------------------------------------------------------------------------
 -- Ex 9: Reorder a list using a list of indices.
