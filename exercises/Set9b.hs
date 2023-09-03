@@ -121,22 +121,25 @@ prettyPrint' size [] currentCoord strBuilder
 	
 prettyPrint' size queenCoords currentCoord strBuilder 
 	| getRow currentCoord == size + 1 && getCol currentCoord == size + 1 = strBuilder -- End of printing.
-	| getCol currentCoord == size + 1 = "\n" ++ prettyPrint' size queens (nextRow currentCoord) strBuilder'
-	| otherwise = if coordIsQueen currentCoord (head queenCoords)) = "Q" ++ prettyPring' size (drop 1 queens) (
+	| getCol currentCoord == size + 1 = "\n" ++ prettyPrint' size queenCoords (nextRow currentCoord) strBuilder
+	| otherwise = if coordIsQueen currentCoord (head queenCoords)
+                  then "Q" ++ prettyPrint' size (drop 1 queenCoords) (nextCol currentCoord) strBuilder 
+                  else "." ++ prettyPrint' size queenCoords (nextCol currentCoord) strBuilder
+                  
 
 -- prettyPrint' size [] currentCoord strBuilder = let (r, c) = currentCoord
                                                -- in if c == size + 1
                                                   -- then strBuilder ++ "\n" ++ prettyPrint' size [] (nextRow currentCoord) strBuilder
                                                   -- else strBuilder ++ "." ++ prettyPrint' size [] (nextCol currentCoord) strBuilder
 												  
-prettyPrint' size coords currentCoord strBuilder = let (r, c) = head coords; 
-                                                   in if getRow currentCoord == size + 1
-                                                      then strBuilder
-												      else if getCol currentCoord == size + 1
-                                                           then strBuilder ++ "\n" ++ prettyPrint' size coords (nextRow currentCoord) strBuilder
-                                                           else if getRow currentCoord == r && getCol currentCoord == c 
-                                                                then strBuilder ++ "Q" ++ prettyPrint' size (drop 1 coords) (nextCol currentCoord) strBuilder 
-                                                                else strBuilder ++ "." ++ prettyPrint' size coords (nextCol currentCoord) strBuilder
+-- prettyPrint' size coords currentCoord strBuilder = let (r, c) = head coords; 
+                                                   -- in if getRow currentCoord == size + 1
+                                                      -- then strBuilder
+												      -- else if getCol currentCoord == size + 1
+                                                           -- then strBuilder ++ "\n" ++ prettyPrint' size coords (nextRow currentCoord) strBuilder
+                                                           -- else if getRow currentCoord == r && getCol currentCoord == c 
+                                                                -- then strBuilder ++ "Q" ++ prettyPrint' size (drop 1 coords) (nextCol currentCoord) strBuilder 
+                                                                -- else strBuilder ++ "." ++ prettyPrint' size coords (nextCol currentCoord) strBuilder
 												 
 coordCmp :: (Row, Col) -> (Row, Col) -> Ordering
 coordCmp (r1, c1) (r2, c2) = if r1 < r2 
@@ -148,8 +151,8 @@ coordCmp (r1, c1) (r2, c2) = if r1 < r2
                                        else GT
 
 prettyPrint :: Size -> [Coord] -> String
-prettyPrint size cs = let sortedCoords = sortBy (\(a1, b1) (a2, b2) -> coordCmp (a1, b1) (a2, b2)) cs  
-                      in prettyPrint' size sortedCoords (1, 1) ""
+prettyPrint size queens = let sortedQueens = sortBy (\(a1, b1) (a2, b2) -> coordCmp (a1, b1) (a2, b2)) queens
+                          in prettyPrint' size sortedQueens (1, 1) ""
 
 --------------------------------------------------------------------------------
 -- Ex 3: The task in this exercise is to define the relations sameRow, sameCol,
