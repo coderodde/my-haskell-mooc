@@ -274,5 +274,21 @@ identity n = [0 .. n - 1]
 multiply :: Permutation -> Permutation -> Permutation
 multiply p q = map (\i -> p !! (q !! i)) (identity (length p))
 
+
+------------- array -> index -> new value: returns result list
+updateList :: [a] -> Int -> a -> [a]
+updateList array index value = take index array ++ [value] ++ drop (index + 1) array
+
+-- Permute helper permutation -> original array -> work array -> current index -> n: returns permuted array.
+permute' :: Permutation -> [a] -> [a] -> Int -> Int -> [a]
+permute' [p] o w i _ = updateList w p (o !! i)
+permute' (p : ps) o w i n =
+  let nextArray = permute' ps o (updateList w p (o !! i)) (i + 1) n
+   in nextArray
+permute' p o w i n = if i == n then w else permute' p o w (i + 1) n
+
+-- The actual permutation function:
 permute :: Permutation -> [a] -> [a]
-permute = todo
+permute [] _ = []
+permute _ [] = []
+permute p o = permute' p o o 0 (length o)
