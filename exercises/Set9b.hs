@@ -115,12 +115,12 @@ coordIsQueen (y, x) (qy, qx) = y == qy && x == qx
 prettyPrint' :: Size -> [Coord] -> Coord -> String -> String
 
 prettyPrint' size [] currentCoord strBuilder
-	| getRow currentCoord == size + 1 && getCol currentCoord == size + 1 = strBuilder -- End of printing.
+	| getRow currentCoord == size && getCol currentCoord == size + 1 = strBuilder ++ "\n" -- End of printing.
 	| getCol currentCoord == size + 1 = "\n" ++ prettyPrint' size [] (nextRow currentCoord) strBuilder
 	| otherwise = "." ++ prettyPrint' size [] (nextCol currentCoord) strBuilder
 	
 prettyPrint' size queenCoords currentCoord strBuilder 
-	| getRow currentCoord == size + 1 && getCol currentCoord == size + 1 = strBuilder -- End of printing.
+	| getRow currentCoord == size && getCol currentCoord == size + 1 = strBuilder ++ "\n" -- End of printing.
 	| getCol currentCoord == size + 1 = "\n" ++ prettyPrint' size queenCoords (nextRow currentCoord) strBuilder
 	| otherwise = if coordIsQueen currentCoord (head queenCoords)
                   then "Q" ++ prettyPrint' size (drop 1 queenCoords) (nextCol currentCoord) strBuilder 
@@ -140,15 +140,31 @@ prettyPrint' size queenCoords currentCoord strBuilder
                                                            -- else if getRow currentCoord == r && getCol currentCoord == c 
                                                                 -- then strBuilder ++ "Q" ++ prettyPrint' size (drop 1 coords) (nextCol currentCoord) strBuilder 
                                                                 -- else strBuilder ++ "." ++ prettyPrint' size coords (nextCol currentCoord) strBuilder
-												 
+												
+
 coordCmp :: (Row, Col) -> (Row, Col) -> Ordering
-coordCmp (r1, c1) (r2, c2) = if r1 < r2 
-                             then LT 
-                             else if r2 > r2 
-                                  then GT
-                                  else if c1 < c2
-                                       then LT
-                                       else GT
+coordCmp (r1, c1) (r2, c2) =
+  if r1 < r2
+    then LT
+    else
+      if r1 > r2
+        then GT
+        else
+          if c1 < c2
+            then LT
+            else
+              if c1 > c2
+                then GT
+                else EQ
+												
+-- coordCmp :: (Row, Col) -> (Row, Col) -> Ordering
+-- coordCmp (r1, c1) (r2, c2) = if r1 < r2 
+                             -- then LT 
+                             -- else if r2 > r2 
+                                  -- then GT
+                                  -- else if c1 < c2
+                                       -- then LT
+                                       -- else GT
 
 prettyPrint :: Size -> [Coord] -> String
 prettyPrint size queens = let sortedQueens = sortBy (\(a1, b1) (a2, b2) -> coordCmp (a1, b1) (a2, b2)) queens
