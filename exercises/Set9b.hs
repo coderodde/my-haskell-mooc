@@ -167,16 +167,16 @@ prettyPrint size queens = let sortedQueens = sortBy (\(a1, b1) (a2, b2) -> coord
 --   sameAntidiag (500,5) (5,500) ==> True
 
 sameRow :: Coord -> Coord -> Bool
-sameRow (i,j) (k,l) = todo
+sameRow (i,j) (k,l) = i == k
 
 sameCol :: Coord -> Coord -> Bool
-sameCol (i,j) (k,l) = todo
+sameCol (i,j) (k,l) = j == l
 
 sameDiag :: Coord -> Coord -> Bool
-sameDiag (i,j) (k,l) = todo
+sameDiag (i,j) (k,l) = k - i == l - j
 
 sameAntidiag :: Coord -> Coord -> Bool
-sameAntidiag (i,j) (k,l) = todo
+sameAntidiag (i,j) (k,l) = i - k == l - j
 
 --------------------------------------------------------------------------------
 -- Ex 4: In chess, a queen may capture another piece in the same row, column,
