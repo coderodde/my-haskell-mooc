@@ -231,7 +231,8 @@ type Candidate = Coord
 type Stack     = [Coord]
 
 danger :: Candidate -> Stack -> Bool
-danger = todo
+danger _ [] = False
+danger c (t:stack) = sameRow c t || sameCol c t || sameDiag c t || sameAntidiag c t || danger c stack
 
 --------------------------------------------------------------------------------
 -- Ex 5: In this exercise, the task is to write a modified version of
