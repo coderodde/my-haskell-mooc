@@ -353,10 +353,10 @@ fixFirst n s = fixFirst' n (head s) s
 -- Hint: Remember nextRow and nextCol? Use them!
 
 continue :: Stack -> Stack
-continue s = todo
+continue s = nextRow (head s) : s
 
 backtrack :: Stack -> Stack
-backtrack s = todo
+backtrack s = nextCol (s !! 1) : drop 2 s
 
 --------------------------------------------------------------------------------
 -- Ex 8: Let's take a step. Our algorithm solves the problem (in a
