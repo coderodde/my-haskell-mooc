@@ -324,8 +324,14 @@ prettyPrint2 size queenStack =
 --     ####Q###
 --     Q#######
 
+fixFirst' :: Size -> Coord -> Stack -> Maybe Stack
+fixFirst' size currentCoord stack
+  | getCol currentCoord > size = Nothing
+  | danger currentCoord (drop 1 stack) = fixFirst' size (nextCol currentCoord) stack
+  | otherwise = Just (currentCoord : tail stack)
+
 fixFirst :: Size -> Stack -> Maybe Stack
-fixFirst n s = todo
+fixFirst n s = fixFirst' n (head s) s 
 
 --------------------------------------------------------------------------------
 -- Ex 7: We need two helper functions for stack management.
