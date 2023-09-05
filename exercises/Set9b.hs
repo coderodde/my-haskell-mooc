@@ -266,8 +266,21 @@ danger c (t:stack) = sameRow c t || sameCol c t || sameDiag c t || sameAntidiag 
 -- (For those that did the challenge in exercise 2, there's probably no O(n^2)
 -- solution to this version. Any working solution is okay in this exercise.)
 
+prettyPrint2' :: Size -> Stack -> Stack -> Coord -> String -> String
+prettyPrint2' size allQueens [] currentCoord strBuilder
+  | getRow currentCoord == size && getCol currentCoord == size + 1 = strBuilder ++ "\n" -- End of printing.
+  | getCol currentCoord == size + 1 = "\n" ++ prettyPrint2' size allQueens [] (nextRow currentCoord) strBuilder
+  | otherwise = if danger currentCoord allQueens then "#" ++ prettyPrint2' size allQueens [] (nextCol currentCoord) strBuilder else "." ++ prettyPrint2' size allQueens [] (nextCol currentCoord) strBuilder
+  
+prettyPrint2' size allQueens queenStack currentCoord strBuilder
+  | getRow currentCoord == size && getCol currentCoord == size + 1 = strBuilder ++ "\n" -- End of printing.
+  | getCol currentCoord == size + 1 = "\n" ++ prettyPrint2' size allQueens queenStack (nextRow currentCoord) strBuilder
+  | otherwise = if currentCoord == head queenStack then "Q" ++ prettyPrint2' size allQueens (drop 1 queenStack) (nextCol currentCoord) strBuilder else if danger currentCoord allQueens then "#" ++ prettyPrint2' size allQueens queenStack (nextCol currentCoord) strBuilder else "." ++ prettyPrint2' size allQueens queenStack (nextCol currentCoord) strBuilder
+
 prettyPrint2 :: Size -> Stack -> String
-prettyPrint2 = todo
+prettyPrint2 size queenStack =
+  let sortedQueenStack = sortBy (\(a1, b1) (a2, b2) -> coordCmp (a1, b1) (a2, b2)) queenStack
+   in prettyPrint2' size sortedQueenStack sortedQueenStack (1, 1) ""
 
 --------------------------------------------------------------------------------
 -- Ex 6: Now that we can check if a piece can be safely placed into a square in
