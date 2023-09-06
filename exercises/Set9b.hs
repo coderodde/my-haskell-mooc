@@ -447,7 +447,9 @@ step n s = if f == Nothing then backtrack s else continue (getJust f)
 -- solve the n queens problem.
 
 finish :: Size -> Stack -> Stack
-finish = todo
+finish _ [] = []
+finish n s = if length s == n + 1 then drop 1 s else finish n (step n s) 
 
 solve :: Size -> Stack
-solve n = finish n [(1,1)]
+solve 1 = [(1,1)]
+solve n = finish n [(1, 1)]
