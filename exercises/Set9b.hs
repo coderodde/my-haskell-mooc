@@ -424,9 +424,16 @@ backtrack s = nextCol (s !! 1) : drop 2 s
 --     step 8 [(5,1),(4,2),(3,5),(2,3),(1,1)] ==> [(6,1),(5,4),(4,2),(3,5),(2,3),(1,1)]
 --     step 8 [(6,1),(5,4),(4,2),(3,5),(2,3),(1,1)] ==> [(5,5),(4,2),(3,5),(2,3),(1,1)]
 
-step :: Size -> Stack -> Stack
-step = todo
+getJust :: Maybe a -> a
+getJust Nothing = error ("Getting Nothing")
+getJust (Just x) = x
 
+step :: Size -> Stack -> Stack
+step n [] = []
+step n s = if f == Nothing then backtrack s else continue (getJust f)
+  where
+    f = fixFirst n s
+	
 --------------------------------------------------------------------------------
 -- Ex 9: Let's solve our puzzle! The function finish takes a partial
 -- solution (stack) and repeatedly step until a complete solution is
