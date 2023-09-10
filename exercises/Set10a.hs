@@ -107,8 +107,15 @@ alternate xs ys z = xs ++ [z] ++ ys ++ [z] ++ alternate xs ys z
 --   lengthAtLeast 7 [1,2,3] ==> False
 --   lengthAtLeast 10 [0..]  ==> True
 
+lengthAtLeastHelper :: Int -> Int -> [a] -> Bool
+lengthAtLeastHelper tentativeLength minimumLength [] = tentativeLength >= minimumLength
+lengthAtLeastHelper tentativeLength minimumLength (x:xs) = 
+	if (tentativeLength == minimumLength) 
+	then True 
+	else lengthAtLeastHelper (tentativeLength + 1) minimumLength xs
+
 lengthAtLeast :: Int -> [a] -> Bool
-lengthAtLeast = todo
+lengthAtLeast minimumLength xs = lengthAtLeastHelper 0 minimumLength xs
 
 ------------------------------------------------------------------------------
 -- Ex 7: The function chunks should take in a list, and a number n,
