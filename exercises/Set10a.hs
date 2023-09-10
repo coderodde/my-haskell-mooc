@@ -60,7 +60,7 @@ interleave xs ys = interleaveHelper xs ys []
 -- Hint: remember the functions cycle and zip?
 
 deal :: [String] -> [String] -> [(String,String)]
-deal = todo
+deal ps cs = zip cs (cycle ps)
 
 ------------------------------------------------------------------------------
 -- Ex 4: Compute a running average. Go through a list of Doubles and
