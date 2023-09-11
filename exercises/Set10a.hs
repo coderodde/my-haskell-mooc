@@ -110,7 +110,7 @@ averages ds = temp 0 ds ds []
 --   take 10 (alternate [1,2] [3,4,5] 0) ==> [1,2,0,3,4,5,0,1,2,0]
 
 alternate :: [a] -> [a] -> a -> [a]
-alternate xs ys z = todo
+alternate xs ys z = xs ++ [z] ++ ys ++ [z] ++ alternate xs ys z
 
 ------------------------------------------------------------------------------
 -- Ex 6: Check if the length of a list is at least n. Make sure your
@@ -121,8 +121,15 @@ alternate xs ys z = todo
 --   lengthAtLeast 7 [1,2,3] ==> False
 --   lengthAtLeast 10 [0..]  ==> True
 
+lengthAtLeastHelper :: Int -> Int -> [a] -> Bool
+lengthAtLeastHelper tentativeLength minimumLength [] = tentativeLength >= minimumLength
+lengthAtLeastHelper tentativeLength minimumLength (x:xs) = 
+	if (tentativeLength == minimumLength) 
+	then True 
+	else lengthAtLeastHelper (tentativeLength + 1) minimumLength xs
+
 lengthAtLeast :: Int -> [a] -> Bool
-lengthAtLeast = todo
+lengthAtLeast minimumLength xs = lengthAtLeastHelper 0 minimumLength xs
 
 ------------------------------------------------------------------------------
 -- Ex 7: The function chunks should take in a list, and a number n,
