@@ -75,10 +75,24 @@ deal ps cs = zip cs (cycle ps)
 --   averages [3,2,1] ==> [3.0,2.5,2.0]
 --   take 10 (averages [1..]) ==> [1.0,1.5,2.0,2.5,3.0,3.5,4.0,4.5,5.0,5.5]
 
+sumPrefix :: Int -> Int -> [Double] -> Double -> Double
+sumPrefix _ _ [] _ = 0.0
+sumPrefix _ _ [d] _ = d
+sumPrefix index lastIndex (d : ds) acc =
+  if index == lastIndex + 1
+    then acc
+    else d + acc + sumPrefix (index + 1) lastIndex ds acc
 
+avePrefix :: Int -> [Double] -> Double
+avePrefix lastIndex ds = sumPrefix 0 lastIndex ds 0.0 / fromIntegral (lastIndex + 1)
+
+temp :: Int -> [Double] -> [Double] -> [Double] -> [Double]
+temp _ _ [] resultList = resultList -- Terminate recursion on the end of ds list.
+temp currentSize ds (c:cs) resultList = resultList ++ [avePrefix currentSize ds] ++ temp (currentSize + 1) ds cs resultList
 
 averages :: [Double] -> [Double]
-averages = todo
+averages [] = []
+averages ds = temp 0 ds ds []
 
 ------------------------------------------------------------------------------
 -- Ex 5: Given two lists, xs and ys, and an element z, generate an
