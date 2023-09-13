@@ -1,34 +1,25 @@
-lengthAtLeastHelper :: Int -> Int -> [a] -> Bool
-lengthAtLeastHelper tentativeLength minimumLength [] = tentativeLength >= minimumLength
-lengthAtLeastHelper tentativeLength minimumLength (x : xs) =
-  if (tentativeLength == minimumLength)
-    then True
-    else lengthAtLeastHelper (tentativeLength + 1) minimumLength xs
+-- currentIndex -> prefixLength -> data -> acc
+sumPrefix :: Int -> Int -> [Double] -> Double -> Double
+sumPrefix _ _ [] acc = acc
+sumPrefix index prefixLength (d : ds) acc =
+  if index == prefixLength
+    then acc
+    else d + acc + sumPrefix (index + 1) prefixLength ds acc
 
-lengthAtLeast :: Int -> [a] -> Bool
-lengthAtLeast minimumLength xs = lengthAtLeastHelper 0 minimumLength xs
+avePrefix :: Int -> [Double] -> Double
+avePrefix prefixLength ds = (sumPrefix 0 prefixLength ds 0.0) / fromIntegral prefixLength
 
-lengthAtLeastFrom :: Int -> Int -> [a] -> Bool
-lengthAtLeastFrom startIndex size xs = lengthAtLeast (startIndex + size) xs
+-- currentSize -> data -> counter data -> result:
+averagesHelper :: Int -> [Double] -> [Double] -> [Double] -> [Double]
+averagesHelper _ _ [] resultList = resultList -- Terminate recursion on the end of ds list.
+averagesHelper currentSize ds (c:cs) resultList = resultList ++ [avePrefix currentSize ds] ++ averagesHelper (currentSize + 1) ds cs resultList
 
-getSubstring :: Int -> Int -> Int -> [a] -> [a] -> [a] -> [a]
-getSubstring _ _ _ _ result [] = result
-getSubstring startIndex size processed xs result (w : ws) =
-  if not (lengthAtLeastFrom startIndex (size - processed) xs) || processed == size
-    then result
-    else result ++ (xs !! startIndex) : getSubstring (startIndex + 1) size (processed + 1) xs result ws
-
--- startIndex -> substringSize -> list -> result:
-chunksHelper :: Int -> Int -> [a] -> [[a]] -> [[a]]
-chunksHelper startIndex substringSize lst result =
-  let ss = getSubstring startIndex substringSize 0 lst [] lst
-  in if length ss == 0 
-     then result
-	 else result ++ [ss] ++ chunksHelper (startIndex + 1) substringSize lst result
-
-chunks :: Int -> [a] -> [[a]]
-chunks n xs = chunksHelper 0 n xs []
+averages :: [Double] -> [Double]
+averages [] = []
+averages ds = averagesHelper 1 ds ds []
 
 main = do
-  print (chunks 2 [1,2,3,4]) -- ==> [[1,2],[2,3],[3,4]]
-  print (take 4 (chunks 3 [0..])) -- ==> [[0,1,2],[1,2,3],[2,3,4],[3,4,5]]
+  print(sumPrefix 0 1 [3.0, 1.0, 5.0] 0.0)
+  print(avePrefix 3 [3.0, 1.0, 5.0])
+  print(averages [1.0,2.0,3.0])
+  
