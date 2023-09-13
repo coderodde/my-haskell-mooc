@@ -1,25 +1,31 @@
--- currentIndex -> prefixLength -> data -> acc
-sumPrefix :: Int -> Int -> [Double] -> Double -> Double
-sumPrefix _ _ [] acc = acc
-sumPrefix index prefixLength (d : ds) acc =
-  if index == prefixLength
-    then acc
-    else d + acc + sumPrefix (index + 1) prefixLength ds acc
+import Data.Char
 
-avePrefix :: Int -> [Double] -> Double
-avePrefix prefixLength ds = (sumPrefix 0 prefixLength ds 0.0) / fromIntegral prefixLength
+------------------------------------------------------------------------------
+-- Ex 8: Define a newtype called IgnoreCase, that wraps a value of
+-- type String. Define an `Eq` instance for IgnoreCase so that it
+-- compares strings in a case-insensitive way.
+--
+-- To help the tests, also implement the function
+--   ignorecase :: String -> IgnoreCase
+--
+-- Hint: remember Data.Char.toLower
+--
+-- Examples:
+--   ignorecase "abC" == ignorecase "ABc"  ==>  True
+--   ignorecase "acC" == ignorecase "ABc"  ==>  False
+newtype IgnoreCase = IgnoreCase String
 
--- currentSize -> data -> counter data -> result:
-averagesHelper :: Int -> [Double] -> [Double] -> [Double] -> [Double]
-averagesHelper _ _ [] resultList = resultList -- Terminate recursion on the end of ds list.
-averagesHelper currentSize ds (c:cs) resultList = resultList ++ [avePrefix currentSize ds] ++ averagesHelper (currentSize + 1) ds cs resultList
+ignorecaseHelper :: String -> String
+ignorecaseHelper [] = []
+ignorecaseHelper (ch:str) = [Data.Char.toLower ch] ++ ignorecaseHelper str
 
-averages :: [Double] -> [Double]
-averages [] = []
-averages ds = averagesHelper 1 ds ds []
+ignorecase :: String -> IgnoreCase
+ignorecase str = IgnoreCase (ignorecaseHelper str)
+
+instance Eq IgnoreCase where
+  (==) (IgnoreCase str1) (IgnoreCase str2) = ignorecase str1 == ignorecase str2
 
 main = do
-  print(sumPrefix 0 1 [3.0, 1.0, 5.0] 0.0)
-  print(avePrefix 3 [3.0, 1.0, 5.0])
-  print(averages [1.0,2.0,3.0])
-  
+  print(ignorecaseHelper "AbCd")
+  print (ignorecase "abC" == ignorecase "ABc") -- ==>  True
+--  print (ignorecase "acC" == ignorecase "ABc") -- ==>  False

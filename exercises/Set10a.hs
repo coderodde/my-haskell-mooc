@@ -181,9 +181,17 @@ chunks n xs = chunksHelper 0 n xs []
 -- Examples:
 --   ignorecase "abC" == ignorecase "ABc"  ==>  True
 --   ignorecase "acC" == ignorecase "ABc"  ==>  False
+newtype IgnoreCase = IgnoreCase String
 
-ignorecase = todo
+ignorecaseHelper :: String -> String
+ignorecaseHelper "" = ""
+ignorecaseHelper (ch:str) = [Data.Char.toLower ch] ++ ignorecaseHelper str
 
+ignorecase :: String -> IgnoreCase
+ignorecase str = IgnoreCase (ignorecaseHelper str)
+
+instance Eq IgnoreCase where
+  (==) (IgnoreCase str1) (IgnoreCase str2) = ignorecaseHelper str1 == ignorecaseHelper str2
 ------------------------------------------------------------------------------
 -- Ex 9: Here's the Room type and some helper functions from the
 -- course material. Define a cyclic Room structure like this:
