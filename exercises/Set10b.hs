@@ -20,9 +20,10 @@ import Mooc.Todo
 --   True ||| False      ==> True
 --   undefined ||| True  ==> True
 --   False ||| undefined ==> an error!
-
 (|||) :: Bool -> Bool -> Bool
-x ||| y = todo
+(|||) _ True = True
+(|||) True _ = True
+(|||) _ _ = False
 
 ------------------------------------------------------------------------------
 -- Ex 2: Define the function boolLength, that returns the length of a
