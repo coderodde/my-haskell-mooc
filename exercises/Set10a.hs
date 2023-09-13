@@ -192,6 +192,7 @@ ignorecase str = IgnoreCase (ignorecaseHelper str)
 
 instance Eq IgnoreCase where
   (==) (IgnoreCase str1) (IgnoreCase str2) = ignorecaseHelper str1 == ignorecaseHelper str2
+  
 ------------------------------------------------------------------------------
 -- Ex 9: Here's the Room type and some helper functions from the
 -- course material. Define a cyclic Room structure like this:
@@ -232,6 +233,10 @@ play :: Room -> [String] -> [String]
 play room [] = [describe room]
 play room (d:ds) = case move room d of Nothing -> [describe room]
                                        Just r -> describe room : play r ds
+									   
+maze1 = Room "Maze" [("Left",maze2),("Right",maze3)]
+maze2 = Room "Deeper in the maze" [("Left",maze3),("Right",maze1)]
+maze3 = Room "Elsewhere in the maze" [("Left",maze1),("Right",maze2)]
 
 maze :: Room
-maze = todo
+maze = maze1
