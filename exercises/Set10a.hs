@@ -131,7 +131,7 @@ lengthAtLeastHelper tentativeLength minimumLength (x:xs) =
 lengthAtLeast :: Int -> [a] -> Bool
 lengthAtLeast minimumLength xs = lengthAtLeastHelper 0 minimumLength xs
 
-------------------------------------------------------------------------------
+	------------------------------------------------------------------------------
 -- Ex 7: The function chunks should take in a list, and a number n,
 -- and return all sublists of length n of the original list. The
 -- sublists should be in the order that they appear in the original
@@ -146,9 +146,28 @@ lengthAtLeast minimumLength xs = lengthAtLeastHelper 0 minimumLength xs
 --   chunks 2 [1,2,3,4] ==> [[1,2],[2,3],[3,4]]
 --   take 4 (chunks 3 [0..]) ==> [[0,1,2],[1,2,3],[2,3,4],[3,4,5]]
 
-chunks :: Int -> [a] -> [[a]]
-chunks = todo
 
+lengthAtLeastFrom :: Int -> Int -> [a] -> Bool
+lengthAtLeastFrom startIndex size xs = lengthAtLeast (startIndex + size) xs
+
+getSubstring :: Int -> Int -> Int -> [a] -> [a] -> [a] -> [a]
+getSubstring _ _ _ _ result [] = result
+getSubstring startIndex size processed xs result (w : ws) =
+  if not (lengthAtLeastFrom startIndex (size - processed) xs) || processed == size
+    then result
+    else result ++ (xs !! startIndex) : getSubstring (startIndex + 1) size (processed + 1) xs result ws
+
+-- startIndex -> substringSize -> list -> result:
+chunksHelper :: Int -> Int -> [a] -> [[a]] -> [[a]]
+chunksHelper startIndex substringSize lst result =
+  let ss = getSubstring startIndex substringSize 0 lst [] lst
+  in if length ss == 0 
+     then result
+	 else result ++ [ss] ++ chunksHelper (startIndex + 1) substringSize lst result
+
+chunks :: Int -> [a] -> [[a]]
+chunks n xs = chunksHelper 0 n xs []
+  
 ------------------------------------------------------------------------------
 -- Ex 8: Define a newtype called IgnoreCase, that wraps a value of
 -- type String. Define an `Eq` instance for IgnoreCase so that it
