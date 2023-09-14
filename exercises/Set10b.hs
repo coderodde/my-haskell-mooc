@@ -59,8 +59,10 @@ boolLength bs = boolLength' bs 0
 --   validate (\x -> undefined) 3  ==>  an error!
 
 validate :: (a -> Bool) -> a -> a
-validate predicate value = todo
-
+validate predicate value =
+  let r = predicate value
+   in if r then value else value
+   
 ------------------------------------------------------------------------------
 -- Ex 4: Even though we can't implement the generic seq function
 -- ourselves, we can implement it manually for specific datatypes.
