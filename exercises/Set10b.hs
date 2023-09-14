@@ -36,9 +36,17 @@ import Mooc.Todo
 -- Note that with the ordinary length function,
 --   length [False,undefined] ==> 2
 
-boolLength :: [Bool] -> Int
-boolLength xs = todo
+checkBool :: Bool -> Int
+checkBool False = 0
+checkBool True = 0
 
+boolLength' :: [Bool] -> Int -> Int
+boolLength' [] counter = counter
+boolLength' (b:bs) counter = boolLength' bs (counter + 1) + checkBool b
+
+boolLength :: [Bool] -> Int
+boolLength bs = boolLength' bs 0
+ 
 ------------------------------------------------------------------------------
 -- Ex 3: Define the function validate which, given a predicate and a
 -- value, evaluates to the value. However, validate should also force the
