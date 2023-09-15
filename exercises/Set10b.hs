@@ -90,15 +90,16 @@ validate predicate value =
 --   myseq [1..] 'z' ==> 'z'
 --   myseq (undefined::[Int])
 --     ==> *** Exception: Prelude.undefined
-
 class MySeq a where
   myseq :: a -> b -> b
 
 instance MySeq Bool where
-  myseq = todo
+  myseq bool value = if bool then value else value
 
 instance MySeq Int where
-  myseq = todo
+  myseq 0 value = value
+  myseq x value = value
 
 instance MySeq [a] where
-  myseq = todo
+  myseq [] value = value
+  myseq (x:xs) value = value
