@@ -25,14 +25,16 @@ import Mooc.Todo
 -- first line should be HELLO and the second one WORLD
 
 hello :: IO ()
-hello = todo
+hello = do putStrLn("HELLO")
+           putStrLn("WORLD")
 
 ------------------------------------------------------------------------------
 -- Ex 2: define the IO operation greet that takes a name as an
 -- argument and prints a line "HELLO name".
 
 greet :: String -> IO ()
-greet name = todo
+greet name = do
+  putStrLn ("HELLO " ++ name)
 
 ------------------------------------------------------------------------------
 -- Ex 3: define the IO operation greet2 that reads a name from the
@@ -56,7 +58,9 @@ greet2 = todo
 --   ["alice","bob","carl"]
 
 readWords :: Int -> IO [String]
-readWords n = todo
+readWords n = do
+  words <- replicateM n getLine
+  return (sort words)
 
 ------------------------------------------------------------------------------
 -- Ex 5: define the IO operation readUntil f, which reads lines from
@@ -79,7 +83,9 @@ readUntil f = todo
 -- Ex 6: given n, print the numbers from n to 0, one per line
 
 countdownPrint :: Int -> IO ()
-countdownPrint n = todo
+countdownPrint 0 = putStr("0\n")
+countdownPrint n = do print(n)
+                      countdownPrint (n - 1)
 
 ------------------------------------------------------------------------------
 -- Ex 7: isums n should read n numbers from the user (one per line) and
@@ -94,7 +100,7 @@ countdownPrint n = todo
 --   5. produces 9
 
 isums :: Int -> IO Int
-isums n = todo
+isums n = todo 	
 
 ------------------------------------------------------------------------------
 -- Ex 8: when is a useful function, but its first argument has type
