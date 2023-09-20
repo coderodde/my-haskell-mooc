@@ -79,7 +79,11 @@ readWords n = do
 --   ["bananas","garlic","pakchoi"]
 
 readUntil :: (String -> Bool) -> IO [String]
-readUntil f = todo
+readUntil f = do
+  s <- readLn
+  r <- readUntil f
+  if f s then return [s]
+         else readUntil f
 
 ------------------------------------------------------------------------------
 -- Ex 6: given n, print the numbers from n to 0, one per line
@@ -100,9 +104,20 @@ countdownPrint n = do print(n)
 --   3. user enters '5', should print '8' (3+5)
 --   4. user enters '1', should print '9' (3+5+1)
 --   5. produces 9
+isums' :: Int -> Int -> IO Int
+isums' 1 s = do
+  i <- readLn
+  print(i + s)
+  return (i + s) 
+  
+isums' n s = do 
+  i <- readLn
+  print(i + s)
+  isums' (n-1) (s + i)
 
 isums :: Int -> IO Int
-isums n = todo 	
+isums n = do isums' n 0
+
 
 ------------------------------------------------------------------------------
 -- Ex 8: when is a useful function, but its first argument has type
