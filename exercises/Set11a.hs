@@ -170,4 +170,8 @@ while cond op = todo
 --     4. returns the line read from the user
 
 debug :: String -> IO a -> IO a
-debug s op = todo
+debug s op = do 
+  putStrLn s
+  r <- op
+  putStrLn s
+  return r
