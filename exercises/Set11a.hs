@@ -130,7 +130,8 @@ isums n = do isums' n 0
 -- argument has type IO Bool.
 
 whenM :: IO Bool -> IO () -> IO ()
-whenM cond op = todo
+whenM cond op = do b <- cond
+                   when b op
 
 ------------------------------------------------------------------------------
 -- Ex 9: implement the while loop. while condition operation should
@@ -150,8 +151,12 @@ ask = do putStrLn "Y/N?"
          return $ line == "Y"
 
 while :: IO Bool -> IO () -> IO ()
-while cond op = todo
-
+while cond op = do 
+  c <- cond 
+  when c $ do 
+    op
+    while cond op	
+				   
 ------------------------------------------------------------------------------
 -- Ex 10: given a string and an IO operation, print the string, run
 -- the IO operation, print the string again, and finally return what
