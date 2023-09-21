@@ -78,13 +78,18 @@ readWords n = do
 --   STOP
 --   ["bananas","garlic","pakchoi"]
 
-readUntil :: (String -> Bool) -> IO [String]
-readUntil f = do
-  s <- readLn
-  r <- readUntil f
-  if f s then return [s]
-         else readUntil f
-
+reauUntilHelper :: (String -> Bool) -> String -> [String] -> IO [String]
+reauUntilHelper f word words = do
+  wtmp <- getLine
+  if f word 
+  then return words
+  else reauUntilHelper f wtmp (words ++ [word])
+  
+readUntil :: (String -> Bool) -> IO [String] 
+readUntil f = do 
+  initialWord <- getLine
+  reauUntilHelper f initialWord []
+  
 ------------------------------------------------------------------------------
 -- Ex 6: given n, print the numbers from n to 0, one per line
 
