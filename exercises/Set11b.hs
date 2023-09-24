@@ -5,7 +5,7 @@ import Data.List
 import Data.IORef
 import System.IO
 
-import Mooc.Todo
+import Mooc.Todo	
 
 
 ------------------------------------------------------------------------------
@@ -47,7 +47,11 @@ appendAll refstr (w:ws) = do
 --   "x"
 
 swapIORefs :: IORef a -> IORef a -> IO ()
-swapIORefs = todo
+swapIORefs x y = todo
+-- do xvalue <- readIORef x
+                    -- yvalue <- readIORef y
+					-- writeIORef x yvalue
+					-- writeIORef y xvalue
 
 ------------------------------------------------------------------------------
 -- Ex 3: sometimes one bumps into IO operations that return IO
@@ -73,7 +77,8 @@ swapIORefs = todo
 --        replicateM l getLine
 
 doubleCall :: IO (IO a) -> IO a
-doubleCall op = todo
+doubleCall op = do nextOp <- op
+                   nextOp
 
 ------------------------------------------------------------------------------
 -- Ex 4: implement the analogue of function composition (the (.)
