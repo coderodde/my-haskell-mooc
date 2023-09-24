@@ -143,8 +143,13 @@ hFetchLines h = do contents <- hGetContents h
 -- using hFetchLines, or writing out a loop that gets lines from the
 -- handle.
 
+hSelectLines' :: [String] -> [Int] -> [String] -> [String]
+hSelectLines' contents [i] acc = acc ++ [contents !! (i - 1)]
+hSelectLines' contents (i:is) acc = acc ++ [contents !! (i - 1)] ++ hSelectLines' contents is acc
+
 hSelectLines :: Handle -> [Int] -> IO [String]
-hSelectLines h nums = todo
+hSelectLines h nums = do content <- hFetchLines h 
+                         return (hSelectLines' content nums [])
 
 ------------------------------------------------------------------------------
 -- Ex 7: In this exercise we see how a program can be split into a
