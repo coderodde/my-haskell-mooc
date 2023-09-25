@@ -190,4 +190,9 @@ counter ("print",n) = (True,show n,n)
 counter ("quit",n)  = (False,"bye bye",n)
 
 interact' :: ((String,st) -> (Bool,String,st)) -> st -> IO st
-interact' f state = todo
+interact' f state = do inputLine <- readLn
+                       (status, text, newState) <- f inputLine state
+					   putStrLn(inputLine)
+					   if (status) 
+					   then return (interact' f newState)
+					   else return newState
