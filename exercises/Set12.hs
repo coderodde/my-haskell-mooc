@@ -17,7 +17,7 @@ import Mooc.Todo
 --   incrementAll (Just 3.0)  ==>  Just 4.0
 
 incrementAll :: (Functor f, Num n) => f n -> f n
-incrementAll x = todo
+incrementAll x = (+1) <$> x
 
 ------------------------------------------------------------------------------
 -- Ex 2: Sometimes one wants to fmap multiple levels deep. Implement
@@ -68,6 +68,8 @@ data List a = Empty | LNode a (List a)
   deriving Show
 
 instance Functor List where
+  fmap f Empty = Empty
+  fmap f (LNode value next) = LNode (f value) (fmap f next)
 
 ------------------------------------------------------------------------------
 -- Ex 5: Here's another list type. This type every node contains two
@@ -82,6 +84,8 @@ data TwoList a = TwoEmpty | TwoNode a a (TwoList a)
   deriving Show
 
 instance Functor TwoList where
+  fmap f TwoEmpty = TwoEmpty
+  fmap f (TwoNode val1 val2 next) = TwoNode (f val1) (f val2) (fmap f next)
 
 ------------------------------------------------------------------------------
 -- Ex 6: Count all occurrences of a given element inside a Foldable.
