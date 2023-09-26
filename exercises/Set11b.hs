@@ -47,11 +47,11 @@ appendAll refstr (w:ws) = do
 --   "x"
 
 swapIORefs :: IORef a -> IORef a -> IO ()
-swapIORefs x y = todo
--- do xvalue <- readIORef x
-                    -- yvalue <- readIORef y
-					-- writeIORef x yvalue
-					-- writeIORef y xvalue
+swapIORefs x y = do
+  xvalue <- readIORef x
+  yvalue <- readIORef y
+  writeIORef x yvalue
+  writeIORef y xvalue
 
 ------------------------------------------------------------------------------
 -- Ex 3: sometimes one bumps into IO operations that return IO
@@ -190,9 +190,10 @@ counter ("print",n) = (True,show n,n)
 counter ("quit",n)  = (False,"bye bye",n)
 
 interact' :: ((String,st) -> (Bool,String,st)) -> st -> IO st
-interact' f state = do inputLine <- readLn
-                       (status, text, newState) <- f inputLine state
-					   putStrLn(inputLine)
-					   if (status) 
-					   then return (interact' f newState)
-					   else return newState
+interact' f state = do 
+  inputLine <- getLine
+  let (status, text, newState) = f (inputLine, state)
+  putStrLn(text)
+  if status
+  then interact' f newState
+  else return newState
