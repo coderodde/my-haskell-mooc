@@ -36,7 +36,6 @@ incrementAll x = (+1) <$> x
 --   fmap3 on Maybe [Maybe Bool]
 --     fmap3 not (Just [Just False, Nothing])
 --       ==> Just [Just True,Nothing]
-
 fmap2 :: (Functor f, Functor g) => (a -> b) -> f (g a) -> f (g b)
 fmap2 = todo
 
