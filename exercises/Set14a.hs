@@ -40,7 +40,19 @@ greetText name = (T.pack "Hello, ") <> (if T.length name < 16 then name <> (T.pa
 --     ==> "WORD"
 
 shout :: T.Text -> T.Text
-shout = todo
+shout text = shout' (T.words text) 0 (T.pack "")
+
+shout' :: [T.Text] -> Int -> T.Text -> T.Text
+shout' [] _ accumulatorText = accumulatorText
+-- Make sure that the last empty char is not at the end of the result Text:
+shout' [word] index accumulatorText = if index `mod` 2 == 0
+                                      then T.append accumulatorText (T.toUpper word)
+                                      else T.append accumulatorText word
+-- The actual computation:
+shout' (word: words) index accumulatorText = if index `mod` 2 == 0
+                                             then shout' words (index + 1) (T.append accumulatorText (T.toUpper word) <> T.pack " ")
+                                             else shout' words (index + 1) (T.append accumulatorText word <> T.pack " ")
+
 
 ------------------------------------------------------------------------------
 -- Ex 3: Find the longest sequence of a single character repeating in
@@ -64,7 +76,7 @@ longestRepeat = todo
 --   takeStrict 15 (TL.pack (cycle "asdf"))  ==>  "asdfasdfasdfasd"
 
 takeStrict :: Int64 -> TL.Text -> T.Text
-takeStrict = todo
+takeStrict n text = TL.toStrict (TL.take n text)
 
 ------------------------------------------------------------------------------
 -- Ex 5: Find the difference between the largest and smallest byte
@@ -77,6 +89,8 @@ takeStrict = todo
 
 byteRange :: B.ByteString -> Word8
 byteRange = todo
+-- byteRange (B.ByteString.pack []) = 0
+-- byteRange bstring = B.maximum bstring - B.minimum bstring
 
 ------------------------------------------------------------------------------
 -- Ex 6: Compute the XOR checksum of a ByteString. The XOR checksum of
@@ -126,5 +140,5 @@ countUtf8Chars = todo
 --     ==> [0,1,2,2,1,0,0,1,2,2,1,0,0,1,2,2,1,0,0,1]
 
 pingpong :: B.ByteString -> BL.ByteString
-pingpong = todo
+pingpong repeatingPattern = BL.cycle ((BL.fromStrict repeatingPattern) <> (BL.reverse (BL.fromStrict repeatingPattern)))
 
