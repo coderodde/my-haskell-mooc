@@ -63,7 +63,17 @@ shout' (word: words) index accumulatorText = if index `mod` 2 == 0
 --   longestRepeat (T.pack "aabbbbccc") ==> 4
 
 longestRepeat :: T.Text -> Int
-longestRepeat = todo
+longestRepeat upacked = 0
+longestRepeat text = longestRepeat' upacked	 0 0 (T.head text)
+    where upacked = T.unpack text
+	
+longestRepeat' :: String -> Int -> Int -> Char -> Int
+longestRepeat' [] _ count _ = count
+longestRepeat' [x] _ count _ = count
+longestRepeat' (ch:chars) startIndex count startChar =
+    if ch == startChar
+    then longestRepeat' chars startIndex (count + 1) startChar	
+	else longestRepeat' chars (startIndex + count - 1) 1 (head chars)
 
 ------------------------------------------------------------------------------
 -- Ex 4: Given a lazy (potentially infinite) Text, extract the first n
